@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokemon API</title>
+  <style>
+    body {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header></header>
+  <main>
+    <h1>Pokemon API</h1>
+    <section>
+      <h2 class="name">Pokemon</h2>
+      <figure>
+          <img class="img" id="img" src="" alt="Pokemon">
+          <figurecaption>
+            <p class="stats" id="stats"></p>
+          </figurecaption>
+      </figure>
+    </section>
+  </main>
+  <footer></footer>
+  <script>
+    class API {
+      constructor() {
+        this.id = this.random();
+        this.url = `https://pokeapi.co/api/v2/pokemon/${this.id}`;
+        this.fetchPokemon();
+      }
+      fetchPokemon() {
+          fetch(this.url)
+          .then(response => response.json())
+          .then(json => this.handleAPI(json))
+          .catch(error => this.handleError(error));
+      }
+      random() {
+        return Math.floor(Math.random() * 1025) + 1;
+      }
+      handleAPI(data) {
+        const pokeData = {
+          name: data.name,
+          image: data.sprites.front_default,
+          stats: {
+            hp: data.stats[0].base_stat,
+            atk: data.stats[1].base_stat,
+            def: data.stats[2].base_stat,
+            spe: data.stats[5].base_stat
+          }
+        }
+        document.querySelector(".stats").innerHTML =`
+          <span>HP: ${pokeData.stats.hp}</span><br>
+          <span>Attack: ${pokeData.stats.atk}</span><br>
+          <span>Defense: ${pokeData.stats.def}</span><br>
+          <span>Speed: ${pokeData.stats.spe}</span><br>
+        `;
+        document.querySelector(".img").src = pokeData.image;
+        document.querySelector(".name").textContent = pokeData.name;
+      }
+      handleError(error) {
+        console.log("POKE API ERROR", error);
+      }
+    }
+    const pokeAPI = new API();
+  </script>
+  </body>
+</html>
